@@ -1,0 +1,65 @@
+:root {
+    --white: white;
+    --charcoal-grey: #373a3c;
+    --gunmetal: #55595c;
+    --warm-gray: #707070;
+    --silver: #eceeef;
+    --water-blue: #1c7cd5;
+    --green: #5cb85c;
+    --info: #56c0e0;
+    --warning: #f0ad4e;
+    --pale-red: #d9534f;
+    --light-green: #e2eed8;
+    --light-info: #dcedf6;
+    --light-warning: #fcf7e4;
+    --light-pale-red: #efdfdf;
+    --light-grey-green: #d5e6c7;
+    --dark-sky-blue: #5bc0de;
+    --brick: #cb2e25;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeue-Black.otf');
+    font-weight: bolder;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeue-Light.otf');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeue-Medium.otf');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeue-Thin.otf');
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeueBold.ttf');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeueLight.ttf');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue', sans-serif;
+    src: url('../font/helvetica-neue/HelveticaNeueMedium.ttf');
+    font-weight: 500;
+}
+
+* {
+    font-family: 'Helvetica Neue';
+}
