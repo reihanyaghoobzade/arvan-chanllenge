@@ -18,6 +18,13 @@ export const useAuthStore = defineStore('auth', {
     afterSuccessLogin(user) {
       TokenService.setToken(user?.token)
       this.user = { username: user?.username, email: user?.email }
+    },
+    checkIsLoggedIn() {
+      const token = TokenService.getToken()
+      if (token) {
+        this.token = token
+        this.isLoggedIn = true
+      }
     }
   }
 })

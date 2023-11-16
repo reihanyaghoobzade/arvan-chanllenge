@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TANK_TOKEN_KEY = 'arvan-challenge-accessToken'
+const TANK_TOKEN_KEY = 'arvan-challenge-access-token'
 
 const TokenService = {
   getToken() {
