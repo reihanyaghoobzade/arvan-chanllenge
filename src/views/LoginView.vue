@@ -99,6 +99,12 @@ const onSubmit = async () => {
     )
   }
 }
+
+const onChangeRoute = () => {
+  showError.username = false
+  showError.email = false
+  showError.password = false
+}
 </script>
 
 <template>
@@ -111,17 +117,35 @@ const onSubmit = async () => {
         <form class="d-flex flex-column justify-content-center">
           <div v-if="!isLoginPage" class="form-group mb-4">
             <label for="username" class="login__form-label ms-2 mb-2">User</label>
-            <input v-model="formData.username" type="email" class="form-control" id="username" />
+            <input
+              v-model="formData.username"
+              type="email"
+              :class="['form-control', { 'border border-danger': showError.username }]"
+              id="username"
+              required
+            />
             <p v-if="showError.username" class="login__form-field--error">Required field</p>
           </div>
           <div class="form-group mb-4">
             <label for="email" class="login__form-label ms-2 mb-2">Email</label>
-            <input v-model="formData.email" type="email" class="form-control" id="email" />
+            <input
+              v-model="formData.email"
+              type="email"
+              :class="['form-control', { 'border border-danger': showError.email }]"
+              id="email"
+              required
+            />
             <p v-if="showError.email" class="login__form-field--error">Required field</p>
           </div>
           <div class="form-group mb-4">
             <label for="password" class="login__form-label ms-2 mb-2">Password</label>
-            <input v-model="formData.password" type="password" class="form-control" id="password" />
+            <input
+              v-model="formData.password"
+              type="password"
+              :class="['form-control', { 'border border-danger': showError.password }]"
+              id="password"
+              required
+            />
             <p v-if="showError.password" class="login__form-field--error">Required field</p>
           </div>
           <button
@@ -138,6 +162,7 @@ const onSubmit = async () => {
           <RouterLink
             class="fw-bold login__go-to-register"
             :to="{ path: isLoginPage ? '/register' : 'login' }"
+            @click="onChangeRoute"
             >{{ isLoginPage ? 'Register Now' : 'Login' }}</RouterLink
           >
         </div>

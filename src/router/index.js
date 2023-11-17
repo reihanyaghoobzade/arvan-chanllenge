@@ -21,10 +21,22 @@ const router = createRouter({
           component: () => import('../views/ArticlesView.vue')
         },
         {
+          path: 'page/:page',
+          name: 'articles-pages',
+          meta: { title: 'All Posts' },
+          component: () => import('../views/ArticlesView.vue')
+        },
+        {
           path: 'create',
           name: 'new-article',
           component: () => import('../views/NewArticleView.vue'),
           meta: { title: 'New Post' }
+        },
+        {
+          path: 'edit/:slug',
+          name: 'edit-article',
+          component: () => import('../views/NewArticleView.vue'),
+          meta: { title: 'Edit Post' }
         }
       ]
     },
