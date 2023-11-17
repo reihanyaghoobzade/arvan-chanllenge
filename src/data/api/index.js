@@ -11,3 +11,7 @@ export function apiPostLoginUser(data, config = {}) {
 export function apiGetArticles(config = {}) {
   return generalRequest.get('/articles', config)
 }
+
+export function apiDeleteArticle(slug, config = {}) {
+  return generalRequest.delete(`/articles/${slug}`, config)
+}

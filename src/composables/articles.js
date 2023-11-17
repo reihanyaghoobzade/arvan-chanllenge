@@ -1,9 +1,15 @@
-import { useQuery } from '@tanstack/vue-query'
-import { apiGetArticles } from '../data/api'
+import { useMutation, useQuery } from '@tanstack/vue-query'
+import { apiDeleteArticle, apiGetArticles } from '../data/api'
 
-export const useArticles = () => {
+export const useArticles = (key) => {
   return useQuery({
-    queryKey: ['articles'],
+    queryKey: key,
     queryFn: () => apiGetArticles()
+  })
+}
+
+export const useDeleteArticle = () => {
+  return useMutation({
+    mutationFn: (slug) => apiDeleteArticle(slug)
   })
 }
