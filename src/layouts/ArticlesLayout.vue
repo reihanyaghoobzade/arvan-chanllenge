@@ -15,7 +15,7 @@ const onLogout = () => {
 
 <template>
   <div class="article">
-    <header class="article__header d-flex align-items-center text-white px-4 py-2 py-md-0">
+    <header class="article__header d-flex align-items-center text-white px-4">
       <div class="w-100 d-flex justify-content-between align-items-center gap-4">
         <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-sm-4">
           <p class="fs-4 m-0">Arvan Challenge</p>
@@ -56,7 +56,7 @@ const onLogout = () => {
           </div>
         </div>
       </div>
-      <div class="d-md-none col-12 p-0 article__sidebar position-fixed bottom-0">
+      <div class="d-md-none col-12 p-0 article__sidebar position-fixed bottom-0 z-2">
         <div class="row mx-0">
           <div class="col p-0">
             <RouterLink
@@ -88,7 +88,7 @@ const onLogout = () => {
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-10 px-4 pt-4">
+      <div class="col-12 col-md-10 px-4 pt-4 article-sidebar__main">
         <RouterView />
       </div>
     </div>
@@ -98,6 +98,7 @@ const onLogout = () => {
 <style lang="scss" scoped>
 .article__header {
   background-color: var(--charcoal-grey);
+  height: 4.5rem;
 
   @include media-breakpoint-up('md') {
     height: 3.25rem;
@@ -106,11 +107,19 @@ const onLogout = () => {
 
 .article__sidebar {
   background-color: var(--water-blue);
+
   @include media-breakpoint-up('md') {
-    height: calc(100vh - 3.25rem);
+    min-height: calc(100vh - 3.25rem);
   }
 }
 
+.article-sidebar__main {
+  min-height: calc(100vh - 7rem);
+
+  @include media-breakpoint-up('md') {
+    min-height: calc(100vh - 3.25rem);
+  }
+}
 .article__sidebar-link {
   font-size: 1.125rem;
 
