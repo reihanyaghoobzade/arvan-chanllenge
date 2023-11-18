@@ -25,7 +25,7 @@ const onLogout = () => {
       </div>
     </header>
     <div class="row mx-0">
-      <div class="d-none d-md-block col-md-2 p-0 article__sidebar">
+      <div class="d-none d-md-block col-md-3 col-lg-2 p-0 article__sidebar">
         <div>
           <p class="my-3 mx-4 fs-4 text-white">Post</p>
           <div>
@@ -88,7 +88,7 @@ const onLogout = () => {
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-10 px-4 pt-4 article-sidebar__main">
+      <div class="col-12 col-md-9 col-lg-10 px-4 pt-4 article-sidebar__main">
         <RouterView />
       </div>
     </div>

@@ -12,31 +12,30 @@ const router = createRouter({
     {
       path: '/articles',
       component: () => import('../layouts/ArticlesLayout.vue'),
-      meta: { requiresAuth: true },
       children: [
         {
           path: '',
           name: 'all-articles',
-          meta: { title: 'All Posts' },
+          meta: { title: 'All Posts', requiresAuth: true },
           component: () => import('../views/ArticlesView.vue')
         },
         {
           path: 'page/:page',
           name: 'articles-pages',
-          meta: { title: 'All Posts' },
+          meta: { title: 'All Posts', requiresAuth: true },
           component: () => import('../views/ArticlesView.vue')
         },
         {
           path: 'create',
           name: 'new-article',
-          component: () => import('../views/NewArticleView.vue'),
-          meta: { title: 'New Post' }
+          component: () => import('../views/ArticleView.vue'),
+          meta: { title: 'New Post', requiresAuth: true }
         },
         {
           path: 'edit/:slug',
           name: 'edit-article',
-          component: () => import('../views/NewArticleView.vue'),
-          meta: { title: 'Edit Post' }
+          component: () => import('../views/ArticleView.vue'),
+          meta: { title: 'Edit Post', requiresAuth: true }
         }
       ]
     },

@@ -119,7 +119,7 @@ const onChangeRoute = () => {
             <label for="username" class="login__form-label ms-2 mb-2">User</label>
             <input
               v-model="formData.username"
-              type="email"
+              type="username"
               :class="['form-control', { 'border border-danger': showError.username }]"
               id="username"
               required
@@ -154,6 +154,12 @@ const onChangeRoute = () => {
             @click.prevent="onSubmit"
             :disabled="loading"
           >
+            <span
+              v-if="loading"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
             {{ isLoginPage ? 'Login' : 'Register' }}
           </button>
         </form>

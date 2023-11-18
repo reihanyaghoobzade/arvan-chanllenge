@@ -4,11 +4,13 @@ import { RouterLink, useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import { useArticles, useDeleteArticle } from '../composables/articles'
 import LoadingComponent from '../components/LoadingComponent.vue'
+import { useToastStore } from '../stores/toast'
 
 const route = useRoute()
-const articlePage = computed(() => route?.params?.page ?? 1)
+const articlePage = computed(() => route?.params?.page ?? '1')
 const { data, refetch, isLoading, isError } = useArticles(['articles', articlePage])
 const { mutate: deleteArticle } = useDeleteArticle()
+const toast = useToastStore()
 
 const articles = computed(() => {
   return data?.value?.articles
@@ -17,13 +19,21 @@ const articles = computed(() => {
 const onDeletePost = (slug) => {
   deleteArticle(slug, {
     onSuccess: () => {
-      // TODO: show alert
-      console.log('success')
+      toast.showToast()
+      toast.setInfo({
+        title: 'Well done!',
+        message: 'Article deleted successfully.',
+        type: 'success'
+      })
       refetch?.()
     },
     onError: () => {
-      // TODO: show alert
-      console.log('error')
+      toast.showToast()
+      toast.setInfo({
+        title: 'Oops!',
+        message: 'Something went wrong.',
+        type: 'error'
+      })
     },
     onSettled: () => {
       document.getElementById('deleteModalClose').click()
@@ -143,7 +153,7 @@ const onDeletePost = (slug) => {
           </tbody>
         </table>
       </div>
-      <nav aria-label="Page navigation">
+      <nav aria-label="page navigation">
         <ul class="pagination justify-content-center">
           <li :class="['page-item', { disabled: articlePage === '1' }]">
             <RouterLink
@@ -154,7 +164,9 @@ const onDeletePost = (slug) => {
               <span aria-hidden="true">&laquo;</span>
             </RouterLink>
           </li>
-          <li :class="['page-item', { active: articlePage === '1' }]">
+          <li
+            :class="['page-item', { active: articlePage === '1' || route.name === 'all-articles' }]"
+          >
             <RouterLink class="page-link" to="/articles/page/1">1</RouterLink>
           </li>
           <li :class="['page-item', { active: articlePage === '2' }]">
