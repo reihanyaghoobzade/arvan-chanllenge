@@ -8,8 +8,11 @@ import {
   apiPostArticle
 } from '../data/api'
 
-export const useArticles = (key) => {
-  return useQuery({ queryKey: key, queryFn: apiGetArticles })
+export const useArticles = (pageNumber) => {
+  return useQuery({
+    queryKey: ['articles', pageNumber],
+    queryFn: () => apiGetArticles(pageNumber)
+  })
 }
 
 export const useEditArticle = (slug, config) =>
