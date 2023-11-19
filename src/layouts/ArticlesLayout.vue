@@ -1,11 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import TokenService from '../data/services/token'
+import { useAuthStore } from '../stores/auth'
 
-// TODO: get user when she/he is login
-const username = ref('reihan')
 const route = useRoute()
+const auth = useAuthStore()
+
+const user = computed(() => auth.getUser)
 
 const onLogout = () => {
   TokenService.removeToken()
@@ -19,7 +21,7 @@ const onLogout = () => {
       <div class="w-100 d-flex justify-content-between align-items-center gap-4">
         <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-sm-4">
           <p class="fs-4 m-0">Arvan Challenge</p>
-          <p class="fs-6 m-0">Welcome {{ username }}</p>
+          <p class="fs-6 m-0">Welcome {{ user?.username }}</p>
         </div>
         <button type="button" class="btn btn-outline-info btn-sm" @click="onLogout">Logout</button>
       </div>

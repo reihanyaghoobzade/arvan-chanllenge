@@ -25,6 +25,9 @@ export const useAuthStore = defineStore('auth', {
         this.token = token
         this.isLoggedIn = true
       }
+    },
+    setCurrentUser(user) {
+      this.user = { username: user?.username, email: user?.email }
     }
   }
 })
