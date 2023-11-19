@@ -13,13 +13,18 @@ const { allTags, articleTags, showError } = defineProps({
   showError: {
     type: Boolean,
     default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
+
 const emit = defineEmits(['onSelectTag'])
 const selectedTags = ref([...articleTags])
 
 const tagList = computed(() => {
-  return [...(allTags?.tags || []), ...articleTags].sort()
+  return [...(allTags?.tags || [])].sort()
 })
 
 const onSelectTag = (tag) => {
@@ -53,6 +58,7 @@ const onSelectTag = (tag) => {
           class="form-check-input"
           type="checkbox"
           :value="tag"
+          :disabled="disabled"
           :checked="selectedTags.includes(tag)"
           @change="onSelectTag(tag)"
         />
