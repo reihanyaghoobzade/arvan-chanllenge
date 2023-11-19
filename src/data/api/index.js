@@ -8,6 +8,10 @@ export function apiPostLoginUser(data, config = {}) {
   return generalRequest.post('/users/login', data, config)
 }
 
+export function apiGetCurrentUser(config = {}) {
+  return generalRequest.get('/user', config)
+}
+
 export function apiGetArticles(config = {}) {
   return generalRequest.get('/articles', config)
 }
