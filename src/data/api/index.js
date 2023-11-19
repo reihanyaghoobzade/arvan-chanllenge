@@ -12,8 +12,8 @@ export function apiGetCurrentUser(config = {}) {
   return generalRequest.get('/user', config)
 }
 
-export function apiGetArticles(config = {}) {
-  return generalRequest.get('/articles', config)
+export function apiGetArticles(pageNumber, config = {}) {
+  return generalRequest.get(`/articles/?offset=${pageNumber}`, config)
 }
 
 export function apiGetArticle(slug, config = {}) {
