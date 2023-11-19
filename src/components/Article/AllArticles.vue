@@ -2,10 +2,10 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import dayjs from 'dayjs'
-import { useArticles, useDeleteArticle } from '../composables/articles'
-import LoadingComponent from './LoadingComponent.vue'
-import { useToastStore } from '../stores/toast'
-import PaginationComponent from './PaginationComponent.vue'
+import { useArticles, useDeleteArticle } from '../../composables/articles'
+import LoadingComponent from '../LoadingComponent.vue'
+import { useToastStore } from '../../stores/toast'
+import PaginationComponent from '../PaginationComponent.vue'
 
 const { articlePage } = defineProps({
   articlePage: {

@@ -28,13 +28,13 @@ const router = createRouter({
         {
           path: 'create',
           name: 'new-article',
-          component: () => import('../views/ArticleView.vue'),
+          component: () => import('../views/UpsertView.vue'),
           meta: { title: 'New Post', requiresAuth: true }
         },
         {
           path: 'edit/:slug',
           name: 'edit-article',
-          component: () => import('../views/ArticleView.vue'),
+          component: () => import('../views/UpsertView.vue'),
           meta: { title: 'Edit Post', requiresAuth: true }
         }
       ]

@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import AllArticles from '../components/AllArticles.vue'
+import AllArticles from '../components/Article/AllArticles.vue'
 
 const route = useRoute()
 </script>

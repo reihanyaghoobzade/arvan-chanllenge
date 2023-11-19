@@ -25,7 +25,7 @@ const { currentPage, allPage, perPage, baseRoute } = defineProps({
   }
 })
 
-const visible = computed(() => {
+const visiblePages = computed(() => {
   return Array.from(Array(allPage).keys()).slice(
     currentPage < perPage ? 0 : currentPage - 5,
     currentPage < perPage ? perPage : currentPage + 1
@@ -37,7 +37,7 @@ const visible = computed(() => {
     <ul class="pagination flex-wrap justify-content-center">
       <li v-if="showFirstLastPage" class="page-item">
         <RouterLink class="page-link" :to="baseRoute + 1" aria-label="First Page">
-          <span aria-hidden="true">First</span>
+          <span aria-hidden="true">First Page</span>
         </RouterLink>
       </li>
       <li :class="['page-item', { disabled: currentPage === 0 }]">
@@ -46,7 +46,7 @@ const visible = computed(() => {
         </RouterLink>
       </li>
       <li v-if="currentPage > 5" class="page-item"><span class="page-link">...</span></li>
-      <li v-for="i in visible" :key="i" :class="['page-item', { active: currentPage === i }]">
+      <li v-for="i in visiblePages" :key="i" :class="['page-item', { active: currentPage === i }]">
         <RouterLink class="page-link" :to="baseRoute + (i + 1)">{{ i + 1 }}</RouterLink>
       </li>
       <li v-if="currentPage + 1 < allPage" class="page-item">

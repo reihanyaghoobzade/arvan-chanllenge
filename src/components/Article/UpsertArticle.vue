@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch, defineProps } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { object, string } from 'yup'
 import {
@@ -7,10 +7,12 @@ import {
   useAllTags,
   useUpdateArticle,
   useCreateArticle
-} from '../composables/articles'
-import LoadingComponent from '../components/LoadingComponent.vue'
-import ArticleTags from '../components/ArticleTags.vue'
-import { useToastStore } from '../stores/toast'
+} from '../../composables/articles'
+import LoadingComponent from '../LoadingComponent.vue'
+import ArticleTags from './ArticleTags.vue'
+import { useToastStore } from '../../stores/toast'
+
+const { slug } = defineProps({ slug: { type: [String, undefined], default: undefined } })
 
 const formSchema = object({
   title: string().required(),
@@ -24,13 +26,14 @@ const router = useRouter()
 const toast = useToastStore()
 const { data: allTags, isLoading: tagLoading, isError: tagError } = useAllTags()
 const isEditPage = computed(() => route.name === 'edit-article')
-const { data, isLoading, isError, refetch } = useEditArticle(route.params.slug, {
-  enabled: !!route.params.slug
+const { data, isLoading, isError, refetch } = useEditArticle(slug, {
+  enabled: !!slug
 })
-const { mutate: updateArticle } = useUpdateArticle(route.params.slug)
+
+const { mutate: updateArticle } = useUpdateArticle(slug)
 const { mutate: createArticle } = useCreateArticle()
 const loading = ref(false)
-const articleTagList = ref([])
+const articleTagList = reactive([])
 const showError = reactive({
   title: false,
   description: false,
@@ -38,10 +41,10 @@ const showError = reactive({
   tags: false
 })
 const articleData = reactive({
-  title: '',
-  description: '',
-  body: '',
-  tagsList: []
+  title: data?.value?.article?.title || '',
+  description: data?.value?.article?.description || '',
+  body: data?.value?.article?.body || '',
+  tagsList: data?.value?.article?.tagList || []
 })
 
 watch(data, (newValue) => {
@@ -49,17 +52,6 @@ watch(data, (newValue) => {
   articleData.description = newValue?.article?.description
   articleData.body = newValue?.article?.body
   articleData.tagsList = newValue?.article?.tagList || []
-})
-
-watch(route, () => {
-  if (route.name === 'new-article') {
-    articleData.title = ''
-    articleData.description = ''
-    articleData.body = ''
-    articleData.tagsList = []
-  } else if (route.name === 'edit-article') {
-    refetch?.()
-  }
 })
 
 const onSelectTag = (tagList) => {
@@ -77,7 +69,7 @@ const validateForm = async (schema) => {
       title: articleData.title,
       description: articleData.description,
       body: articleData.body,
-      tags: (articleTagList.value || articleData.tagsList)?.join(', ')
+      tagsList: (articleData.tagsList ? articleData.tagsList : articleTagList.value)?.join(', ')
     }
 
     await schema.validate(formData, { abortEarly: false })
@@ -130,10 +122,10 @@ const onSubmit = async () => {
     createArticle(
       {
         article: {
-          title: articleData?.title,
-          description: articleData?.description,
-          body: articleData?.body,
-          tagList: articleTagList.value || articleData?.tagsList
+          title: articleData.title,
+          description: articleData.description,
+          body: articleData.body,
+          tagList: [...articleData.tagsList]
         }
       },
       {
@@ -249,6 +241,7 @@ const onSubmit = async () => {
             :article-tags="articleData?.tagsList"
             @onSelectTag="onSelectTag"
             :show-error="showError.tags"
+            :disabled="!!slug"
           />
         </div>
         <div class="d-lg-none mt-4 p-0">
