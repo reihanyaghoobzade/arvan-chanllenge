@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { camelize, snakize } from '@/utils/convert-to-camel-snake'
 import TokenService from './token'
 
 const addAuthTokenInterceptor = (instance) => {
@@ -24,8 +23,8 @@ const snakizeInterceptor = (instance) => {
     (config) => {
       return {
         ...config,
-        params: snakize(config.params || {}),
-        data: config.data ? snakize(config.data) : undefined
+        params: config.params || {},
+        data: config.data ? config.data : undefined
       }
     },
     (e) => {
@@ -37,7 +36,7 @@ const snakizeInterceptor = (instance) => {
 const addResponseInterceptor = (instance) => {
   instance.interceptors.response.use(
     (res) => {
-      if (res && res.data) return camelize(res.data)
+      if (res && res.data) return res.data
       return res
     },
     (e) => {
