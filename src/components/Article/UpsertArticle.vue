@@ -11,6 +11,7 @@ import {
 import LoadingComponent from '../LoadingComponent.vue'
 import ArticleTags from './ArticleTags.vue'
 import { useToastStore } from '../../stores/toast'
+import { useYup } from '../../composables/use-yup'
 
 const { slug } = defineProps({ slug: { type: [String, undefined], default: undefined } })
 
@@ -30,15 +31,10 @@ const { data, isLoading, isError, refetch } = useEditArticle(slug, {
   enabled: !!slug
 })
 
+const { validate, objectError: showError } = useYup(formSchema)
+
 const { mutate: updateArticle, isPending: updateArticleLoading } = useUpdateArticle(slug)
 const { mutate: createArticle, isPending: createArticleLoading } = useCreateArticle()
-const articleTagList = reactive([])
-const showError = reactive({
-  title: false,
-  description: false,
-  body: false,
-  tags: false
-})
 const articleData = reactive({
   title: data?.value?.article?.title || '',
   description: data?.value?.article?.description || '',
@@ -57,33 +53,15 @@ const onSelectTag = (tagList) => {
   articleData.tagsList = [...tagList]
 }
 
-const validateForm = async (schema) => {
-  showError.title = false
-  showError.description = false
-  showError.body = false
-  showError.tags = false
-
-  try {
-    const formData = {
-      title: articleData.title,
-      description: articleData.description,
-      body: articleData.body,
-      tagsList: (articleData.tagsList ? articleData.tagsList : articleTagList.value)?.join(', ')
-    }
-
-    await schema.validate(formData, { abortEarly: false })
-    return true
-  } catch (err) {
-    err.inner.forEach((error) => {
-      showError[error.path] = true
-    })
-
-    return false
-  }
-}
-
 const onSubmit = async () => {
-  const isValidate = await validateForm(formSchema)
+  const formData = {
+    title: articleData.title,
+    description: articleData.description,
+    body: articleData.body,
+    tagsList: articleData.tagsList?.join(', ')
+  }
+
+  const isValidate = await validate(formData)
   if (!isValidate) return
 
   if (isEditPage.value) {
@@ -235,7 +213,7 @@ const onSubmit = async () => {
             :all-tags="allTags"
             :article-tags="articleData?.tagsList"
             @onSelectTag="onSelectTag"
-            :show-error="showError.tags"
+            :show-error="!!showError.tagsList"
             :disabled="!!slug"
           />
         </div>
