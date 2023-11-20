@@ -27,7 +27,7 @@ const { currentPage, allPage, perPage, baseRoute } = defineProps({
 
 const visiblePages = computed(() => {
   return Array.from(Array(allPage).keys()).slice(
-    currentPage < perPage ? 0 : currentPage - 5,
+    currentPage < perPage ? 0 : currentPage - perPage + 1,
     currentPage < perPage ? perPage : currentPage + 1
   )
 })
@@ -45,7 +45,7 @@ const visiblePages = computed(() => {
           <span aria-hidden="true">&laquo;</span>
         </RouterLink>
       </li>
-      <li v-if="currentPage > 5" class="page-item"><span class="page-link">...</span></li>
+      <li v-if="currentPage > perPage - 1" class="page-item"><span class="page-link">...</span></li>
       <li v-for="i in visiblePages" :key="i" :class="['page-item', { active: currentPage === i }]">
         <RouterLink class="page-link" :to="baseRoute + (i + 1)">{{ i + 1 }}</RouterLink>
       </li>
