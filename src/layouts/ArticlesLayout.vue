@@ -58,7 +58,7 @@ const onLogout = () => {
           </div>
         </div>
       </div>
-      <div class="d-md-none col-12 p-0 article__sidebar position-fixed bottom-0 z-2">
+      <div class="d-md-none col-12 p-0 article__sidebar position-fixed bottom-0">
         <div class="row mx-0">
           <div class="col p-0">
             <RouterLink
@@ -109,6 +109,7 @@ const onLogout = () => {
 
 .article__sidebar {
   background-color: var(--water-blue);
+  z-index: 100;
 
   @include media-breakpoint-up('md') {
     min-height: calc(100vh - 3.25rem);
