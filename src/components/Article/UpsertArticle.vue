@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch, defineProps } from 'vue'
+import { computed, reactive, watch, defineProps } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { object, string } from 'yup'
 import {
@@ -30,9 +30,8 @@ const { data, isLoading, isError, refetch } = useEditArticle(slug, {
   enabled: !!slug
 })
 
-const { mutate: updateArticle } = useUpdateArticle(slug)
-const { mutate: createArticle } = useCreateArticle()
-const loading = ref(false)
+const { mutate: updateArticle, isPending: updateArticleLoading } = useUpdateArticle(slug)
+const { mutate: createArticle, isPending: createArticleLoading } = useCreateArticle()
 const articleTagList = reactive([])
 const showError = reactive({
   title: false,
@@ -87,7 +86,6 @@ const onSubmit = async () => {
   const isValidate = await validateForm(formSchema)
   if (!isValidate) return
 
-  loading.value = true
   if (isEditPage.value) {
     updateArticle(
       {
@@ -112,9 +110,6 @@ const onSubmit = async () => {
             message: 'Something went wrong.',
             type: 'error'
           })
-        },
-        onSettled: () => {
-          loading.value = false
         }
       }
     )
@@ -145,9 +140,6 @@ const onSubmit = async () => {
             message: 'Something went wrong.',
             type: 'error'
           })
-        },
-        onSettled: () => {
-          loading.value = false
         }
       }
     )
@@ -219,12 +211,15 @@ const onSubmit = async () => {
             <div class="d-none d-lg-block mt-4">
               <button
                 type="submit"
-                :class="['btn btn-primary', { disabled: loading }]"
+                :class="[
+                  'btn btn-primary',
+                  { disabled: createArticleLoading || updateArticleLoading }
+                ]"
                 @click.prevent="onSubmit"
-                :disabled="loading"
+                :disabled="createArticleLoading || updateArticleLoading"
               >
                 <span
-                  v-if="loading"
+                  v-if="createArticleLoading || updateArticleLoading"
                   class="spinner-border spinner-border-sm"
                   role="status"
                   aria-hidden="true"
@@ -247,12 +242,12 @@ const onSubmit = async () => {
         <div class="d-lg-none mt-4 p-0">
           <button
             type="submit"
-            :class="['btn btn-primary', { disabled: loading }]"
+            :class="['btn btn-primary', { disabled: createArticleLoading || updateArticleLoading }]"
             @click.prevent="onSubmit"
-            :disabled="loading"
+            :disabled="createArticleLoading || updateArticleLoading"
           >
             <span
-              v-if="loading"
+              v-if="createArticleLoading || updateArticleLoading"
               class="spinner-border spinner-border-sm"
               role="status"
               aria-hidden="true"

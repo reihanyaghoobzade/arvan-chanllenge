@@ -1,9 +1,10 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { object, string } from 'yup'
 import { useLoginUser, useRegisterUser } from '../composables/login-register'
 import { useAuthStore } from '../stores/auth'
+import { useToastStore } from '../stores/toast'
 
 const registerSchema = object({
   username: string().required(),
@@ -19,9 +20,9 @@ const loginSchema = object({
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
-const { mutate: loginRequest } = useLoginUser()
-const { mutate: registerRequest } = useRegisterUser()
-const loading = ref(false)
+const { mutate: loginRequest, isPending: loginLoading } = useLoginUser()
+const { mutate: registerRequest, isPending: registerLoading } = useRegisterUser()
+const toast = useToastStore()
 const formData = reactive({
   username: null,
   email: null,
@@ -56,7 +57,6 @@ const onSubmit = async () => {
     const isValidate = await validateForm(loginSchema)
     if (!isValidate) return
 
-    loading.value = true
     loginRequest(
       {
         user: {
@@ -69,8 +69,13 @@ const onSubmit = async () => {
           auth.afterSuccessLogin(user)
           router.push({ path: '/articles' })
         },
-        onSettled: () => {
-          loading.value = false
+        onError: () => {
+          toast.showToast()
+          toast.setInfo({
+            title: 'Oops!',
+            message: 'Something went wrong.',
+            type: 'error'
+          })
         }
       }
     )
@@ -78,7 +83,6 @@ const onSubmit = async () => {
     const isValidate = await validateForm(registerSchema)
     if (!isValidate) return
 
-    loading.value = true
     registerRequest(
       {
         user: {
@@ -92,8 +96,13 @@ const onSubmit = async () => {
           auth.afterSuccessLogin(user)
           router.push({ path: '/articles' })
         },
-        onSettled: () => {
-          loading.value = false
+        onError: () => {
+          toast.showToast()
+          toast.setInfo({
+            title: 'Oops!',
+            message: 'Something went wrong.',
+            type: 'error'
+          })
         }
       }
     )
@@ -116,7 +125,9 @@ const onChangeRoute = () => {
         </h1>
         <form class="d-flex flex-column justify-content-center">
           <div v-if="!isLoginPage" class="form-group mb-4">
-            <label for="username" class="login__form-label ms-2 mb-2">User</label>
+            <label for="username" :class="['ms-2 mb-2', { 'text-danger': showError.username }]">
+              User
+            </label>
             <input
               v-model="formData.username"
               type="username"
@@ -124,10 +135,12 @@ const onChangeRoute = () => {
               id="username"
               required
             />
-            <p v-if="showError.username" class="login__form-field--error">Required field</p>
+            <p v-if="showError.username" class="text-danger">Required field</p>
           </div>
           <div class="form-group mb-4">
-            <label for="email" class="login__form-label ms-2 mb-2">Email</label>
+            <label for="email" :class="['ms-2 mb-2', { 'text-danger': showError.email }]">
+              Email
+            </label>
             <input
               v-model="formData.email"
               type="email"
@@ -135,10 +148,12 @@ const onChangeRoute = () => {
               id="email"
               required
             />
-            <p v-if="showError.email" class="login__form-field--error">Required field</p>
+            <p v-if="showError.email" class="text-danger">Required field</p>
           </div>
           <div class="form-group mb-4">
-            <label for="password" class="login__form-label ms-2 mb-2">Password</label>
+            <label for="password" :class="['ms-2 mb-2', { 'text-danger': showError.password }]">
+              Password
+            </label>
             <input
               v-model="formData.password"
               type="password"
@@ -146,16 +161,16 @@ const onChangeRoute = () => {
               id="password"
               required
             />
-            <p v-if="showError.password" class="login__form-field--error">Required field</p>
+            <p v-if="showError.password" class="text-danger">Required field</p>
           </div>
           <button
             type="submit"
-            :class="['btn btn-primary', { disabled: loading }]"
+            :class="['btn btn-primary', { disabled: loginLoading || registerLoading }]"
             @click.prevent="onSubmit"
-            :disabled="loading"
+            :disabled="loginLoading || registerLoading"
           >
             <span
-              v-if="loading"
+              v-if="loginLoading || registerLoading"
               class="spinner-border spinner-border-sm"
               role="status"
               aria-hidden="true"
@@ -193,15 +208,6 @@ const onChangeRoute = () => {
 
 .login__name {
   color: var(--warm-gray);
-}
-
-.login__form-field--error {
-  color: var(--brick);
-  margin-top: 0.5rem;
-}
-
-.login__submit-button {
-  background-color: var(--water-blue);
 }
 
 .login__go-to-register {
