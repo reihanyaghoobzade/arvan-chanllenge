@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
-import dayjs from 'dayjs'
 import { useArticles, useDeleteArticle } from '../../composables/articles'
 import LoadingComponent from '../LoadingComponent.vue'
 import { useToastStore } from '../../stores/toast'
 import PaginationComponent from '../PaginationComponent.vue'
+import ArticlesTable from './ArticlesTable.vue'
+import ArticlesCollapse from './ArticlesCollapse.vue'
 
 const { articlePage } = defineProps({
   articlePage: {
@@ -40,16 +40,13 @@ const onDeletePost = (slug) => {
         message: 'Something went wrong.',
         type: 'error'
       })
-    },
-    onSettled: () => {
-      document.getElementById('deleteModalClose').click()
     }
   })
 }
 </script>
 
 <template>
-  <div class="article h-100">
+  <div class="article mb-5 h-100">
     <div v-if="isLoading" class="d-flex w-100 h-100 justify-content-center align-items-center">
       <LoadingComponent />
     </div>
@@ -58,140 +55,28 @@ const onDeletePost = (slug) => {
     </div>
     <div v-else>
       <h1 class="mb-4">All Posts</h1>
-      <div class="table-responsive article__table">
-        <table class="table">
-          <thead class="table-secondary">
-            <tr>
-              <th scope="col" class="p-3 article__table-head">#</th>
-              <th scope="col" class="p-3 article__table-head">Title</th>
-              <th scope="col" class="p-3 text-center article__table-head">Author</th>
-              <th scope="col" class="p-3 article__table-head">Tags</th>
-              <th scope="col" class="p-3 article__table-head">Excerpt</th>
-              <th scope="col" class="p-3 text-end article__table-head">Created</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(article, index) in articles" :key="article.slug">
-              <td class="p-3">
-                {{ articlePage * 10 + (index + 1) }}
-              </td>
-              <td class="p-3 article-table__element">{{ article.title }}</td>
-              <td class="p-3 article-table__element">@{{ article.author.username }}</td>
-              <td class="p-3 article-table__element">{{ article.tagList.join(', ') }}</td>
-              <td class="p-3 article-table__element">{{ article.body.slice(0, 20) }}</td>
-              <td class="p-3">
-                <div class="d-flex justify-content-end gap-3">
-                  <p class="m-0">{{ dayjs(article.createdAt).format('MMMM DD, YYYY') }}</p>
-                  <div class="btn-group">
-                    <button
-                      type="button"
-                      class="btn btn-info text-white dropdown-toggle"
-                      data-bs-toggle="dropdown"
-                      data-bs-display="static"
-                      aria-expanded="false"
-                    >
-                      ...
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <RouterLink
-                          :to="`/articles/edit/${article.slug}`"
-                          class="dropdown-item"
-                          type="button"
-                          >Edit</RouterLink
-                        >
-                      </li>
-                      <li><hr class="dropdown-divider" /></li>
-                      <li>
-                        <button
-                          type="button"
-                          class="dropdown-item"
-                          data-bs-toggle="modal"
-                          data-bs-target="#deleteModal"
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div
-                  class="modal fade"
-                  id="deleteModal"
-                  tabindex="-1"
-                  aria-labelledby="deleteModal"
-                  aria-hidden="true"
-                >
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModal">Delete Article</h5>
-                        <button
-                          type="button"
-                          class="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                          id="deleteModalClose"
-                        ></button>
-                      </div>
-                      <div class="modal-body pb-5 text-muted">Are you sure to delete Article?</div>
-                      <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-outline-secondary"
-                          data-bs-dismiss="modal"
-                        >
-                          No
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-danger"
-                          @click="() => onDeletePost(article.slug)"
-                        >
-                          yes
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="d-lg-none mb-5 mb-lg-0">
+        <ArticlesCollapse
+          :articles="articles"
+          :article-page="articlePage"
+          @onDeletePost="onDeletePost"
+        />
       </div>
-      <PaginationComponent
-        :current-page="articlePage"
-        :all-page="articlesCount"
-        :per-page="5"
-        show-first-last-page
-        base-route="/articles/page/"
-      />
+      <div class="d-none d-lg-block">
+        <ArticlesTable
+          :articles="articles"
+          :article-page="articlePage"
+          @onDeletePost="onDeletePost"
+        />
+      </div>
+      <div class="pb-3 pb-md-0">
+        <PaginationComponent
+          :current-page="articlePage"
+          :all-page="articlesCount"
+          :per-page="3"
+          base-route="/articles/page/"
+        />
+      </div>
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.article {
-  margin-bottom: 4.5rem;
-}
-.article__table {
-  margin-bottom: 2.5rem;
-}
-
-.article__table-head {
-  color: var(--gunmetal);
-}
-
-.article-table__element {
-  max-width: 150px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  @include media-breakpoint-up('sm') {
-    max-width: 250px;
-  }
-  @include media-breakpoint-up(md) {
-    width: auto;
-  }
-}
-</style>
