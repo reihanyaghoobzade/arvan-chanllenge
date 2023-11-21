@@ -15,14 +15,14 @@ const { isLoginPage } = defineProps({
 })
 
 const registerSchema = object({
-  username: string().required(),
-  email: string().email().required(),
-  password: string().required()
+  username: string().required('Username is required'),
+  email: string().email().required('Email is required'),
+  password: string().required('Password is required')
 })
 
 const loginSchema = object({
-  email: string().email().required(),
-  password: string().required()
+  email: string().email().required('Email is required'),
+  password: string().required('Password is required')
 })
 
 const { validate: loginValidate, objectError: loginErrors } = useYup(loginSchema)
@@ -119,7 +119,7 @@ const onSubmit = async () => {
               id="username"
               required
             />
-            <p v-if="registerErrors.username" class="text-danger">Required field</p>
+            <p v-if="registerErrors.username" class="text-danger">{{ registerErrors.username }}</p>
           </div>
           <div class="form-group mb-4">
             <label
@@ -139,7 +139,7 @@ const onSubmit = async () => {
               required
             />
             <p v-if="registerErrors.email || loginErrors.email" class="text-danger">
-              Required field
+              {{ registerErrors.email || loginErrors.email }}
             </p>
           </div>
           <div class="form-group mb-4">
@@ -163,7 +163,7 @@ const onSubmit = async () => {
               required
             />
             <p v-if="registerErrors.password || loginErrors.password" class="text-danger">
-              Required field
+              {{ registerErrors.password || loginErrors.password }}
             </p>
           </div>
           <button

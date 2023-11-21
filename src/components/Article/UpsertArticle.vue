@@ -16,10 +16,10 @@ import { useYup } from '../../composables/use-yup'
 const { slug } = defineProps({ slug: { type: [String, undefined], default: undefined } })
 
 const formSchema = object({
-  title: string().required(),
-  description: string().required(),
-  body: string().required(),
-  tagsList: string().required()
+  title: string().required('Title is required'),
+  description: string().required('Description is required'),
+  body: string().required('Body is required'),
+  tagsList: string().required('Tag is required')
 })
 
 const route = useRoute()
@@ -31,7 +31,7 @@ const { data, isLoading, isError, refetch } = useEditArticle(slug, {
   enabled: !!slug
 })
 
-const { validate, objectError: showError } = useYup(formSchema)
+const { validate, objectError: error } = useYup(formSchema)
 
 const { mutate: updateArticle, isPending: updateArticleLoading } = useUpdateArticle(slug)
 const { mutate: createArticle, isPending: createArticleLoading } = useCreateArticle()
@@ -147,44 +147,42 @@ const onSubmit = async () => {
         <div class="col-12 col-lg-9 p-0 pe-lg-3">
           <form class="d-flex flex-column justify-content-center">
             <div class="form-group mb-4">
-              <label for="title" :class="['mb-2', { 'text-danger': showError.title }]">
-                Title
-              </label>
+              <label for="title" :class="['mb-2', { 'text-danger': error.title }]"> Title </label>
               <input
                 v-model="articleData.title"
                 type="title"
-                :class="['form-control', { 'border border-danger': showError.title }]"
+                :class="['form-control', { 'border border-danger': error.title }]"
                 id="title"
                 placeholder="Title"
                 required
               />
-              <p v-if="showError.title" class="mt-2 text-danger">Required field</p>
+              <p v-if="error.title" class="mt-2 text-danger">{{ error.title }}</p>
             </div>
             <div class="form-group mb-4">
-              <label for="description" :class="['mb-2', { 'text-danger': showError.description }]">
+              <label for="description" :class="['mb-2', { 'text-danger': error.description }]">
                 Description
               </label>
               <input
                 v-model="articleData.description"
                 type="title"
-                :class="['form-control', { 'border border-danger': showError.description }]"
+                :class="['form-control', { 'border border-danger': error.description }]"
                 id="description"
                 placeholder="Description"
                 required
               />
-              <p v-if="showError.description" class="mt-2 text-danger">Required field</p>
+              <p v-if="error.description" class="mt-2 text-danger">{{ error.description }}</p>
             </div>
             <div class="form-group">
-              <label for="body" :class="['mb-2', { 'text-danger': showError.body }]"> Body </label>
+              <label for="body" :class="['mb-2', { 'text-danger': error.body }]"> Body </label>
               <textarea
                 v-model="articleData.body"
                 type="title"
-                :class="['form-control', { 'border border-danger': showError.body }]"
+                :class="['form-control', { 'border border-danger': error.body }]"
                 id="body"
                 rows="9"
                 required
               />
-              <p v-if="showError.body" class="mt-2 text-danger">Required field</p>
+              <p v-if="error.body" class="mt-2 text-danger">{{ error.body }}</p>
             </div>
             <div class="d-none d-lg-block mt-4">
               <button
@@ -213,7 +211,7 @@ const onSubmit = async () => {
             :all-tags="allTags"
             :article-tags="articleData?.tagsList"
             @onSelectTag="onSelectTag"
-            :show-error="!!showError.tagsList"
+            :error="error.tagsList"
             :disabled="!!slug"
           />
         </div>
