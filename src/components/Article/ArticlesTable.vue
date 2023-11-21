@@ -41,7 +41,7 @@ const onDeletePost = (slug) => {
           <td class="p-3 article-table__element">{{ article.title }}</td>
           <td class="p-3 article-table__element">@{{ article.author.username }}</td>
           <td class="p-3 article-table__element">{{ article.tagList.join(', ') }}</td>
-          <td class="p-3 article-table__element">{{ article.body.slice(0, 20) }}</td>
+          <td class="p-3 article-table__element">{{ article.body }}</td>
           <td class="p-3">
             <div class="d-flex justify-content-end gap-3">
               <p class="m-0">{{ dayjs(article.createdAt).format('MMMM DD, YYYY') }}</p>
@@ -137,7 +137,7 @@ const onDeletePost = (slug) => {
   @include media-breakpoint-up('sm') {
     max-width: 250px;
   }
-  @include media-breakpoint-up(md) {
+  @include media-breakpoint-up('md') {
     width: auto;
   }
 }
